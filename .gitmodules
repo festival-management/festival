@@ -1,0 +1,6 @@
+[submodule "backend"]
+	path = backend
+	url = https://github.com/festival-management/backend.git
+[submodule "frontend"]
+	path = frontend
+	url = https://github.com/festival-management/frontend.git
