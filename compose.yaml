@@ -1,0 +1,54 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_NAME: ${DB_NAME}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_TOKEN_EXPIRES: ${JWT_TOKEN_EXPIRES}
+      APP_HOST: ${APP_HOST}
+    networks:
+      - festival
+    depends_on:
+      - db
+    container_name: festival_backend
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_BASE_URL=${VITE_BASE_URL}
+        - VITE_DEFAULT_LIMIT_VALUE=${VITE_DEFAULT_LIMIT_VALUE}
+    ports:
+      - "127.0.0.1:3000:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - festival
+    container_name: festival_frontend
+
+  db:
+    image: postgres:alpine
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - festival_db_data:/var/lib/postgresql/data
+    networks:
+      - festival
+    container_name: festival_postgres_db
+
+volumes:
+  festival_db_data:
+
+networks:
+  festival:
+    driver: bridge
