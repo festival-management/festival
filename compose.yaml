@@ -14,6 +14,7 @@ services:
       APP_HOST: ${APP_HOST}
     networks:
       - festival
+      - lan_access
     depends_on:
       - db
     container_name: festival_backend
@@ -52,3 +53,5 @@ volumes:
 networks:
   festival:
     driver: bridge
+  lan_access:
+    external: true
